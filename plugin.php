@@ -1,0 +1,53 @@
+<?php
+
+/*
+	Plugin Name: CC-Auto-Activate-Plugins
+	Plugin URI: https://wordpress.org/plugins/cc-auto-activate-plugins
+	Description: This plugin automatically activate all Plugins from WP_PLUGIN_DIR.
+	Version: 1.1.3
+	Author: Clearcode
+	Author URI: https://clearcode.cc
+	Text Domain: cc-auto-activate-plugins
+	Domain Path: /
+	License: GPLv3
+	License URI: http://www.gnu.org/licenses/gpl-3.0.txt
+
+	Copyright (C) 2019 by Clearcode <https://clearcode.cc>
+	and associates (see AUTHORS.txt file).
+
+	This file is part of CC-Auto-Activate-Plugins plugin.
+
+	CC-Auto-Activate-Plugins plugin is free software; you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation; either version 2 of the License, or
+	(at your option) any later version.
+
+	CC-Auto-Activate-Plugins plugin is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with CC-Auto-Activate-Plugins plugin; if not, write to the Free Software
+	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+namespace Clearcode\Auto_Activate_Plugins;
+
+use Clearcode\Auto_Activate_Plugins;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+if ( ! function_exists( 'get_plugin_data' ) ) {
+	require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+}
+
+foreach ( [ 'singleton', 'plugin', 'auto-activate-plugins' ] as $class ) {
+	require_once( plugin_dir_path( __FILE__ ) . sprintf( 'includes/class-%s.php', $class ) );
+}
+
+if ( ! has_action( Auto_Activate_Plugins::get( 'slug' ) ) && is_blog_installed() ) {
+	do_action( Auto_Activate_Plugins::get( 'slug' ), Auto_Activate_Plugins::instance() );
+}
